@@ -34,3 +34,4 @@ pillow
 
 streamlit-webrtc
 streamlit-option-menu
+streamlit-audiorec
