@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-12-04T03:52:38.515459",
+  "config": {
+    "whisper_model": "base",
+    "sample_rate": 16000,
+    "vad_mode": 3,
+    "noise_reduction": true
+  },
+  "compression": {
+    "total_original_bytes": 99,
+    "total_compressed_bytes": 91,
+    "average_ratio": 1.0879120879120878,
+    "total_savings_percent": 8.080808080808081
+  },
+  "transcription": {},
+  "quality": {},
+  "performance": {
+    "recording": {
+      "mean_ms": 8290.56978225708,
+      "std_ms": 0.0,
+      "min_ms": 8290.56978225708,
+      "max_ms": 8290.56978225708,
+      "median_ms": 8290.56978225708
+    },
+    "preprocessing": {
+      "mean_ms": 2694.8585510253906,
+      "std_ms": 0.0,
+      "min_ms": 2694.8585510253906,
+      "max_ms": 2694.8585510253906,
+      "median_ms": 2694.8585510253906
+    },
+    "transcription": {
+      "mean_ms": 2536.6499423980713,
+      "std_ms": 0.0,
+      "min_ms": 2536.6499423980713,
+      "max_ms": 2536.6499423980713,
+      "median_ms": 2536.6499423980713
+    },
+    "compression": {
+      "mean_ms": 1.001596450805664,
+      "std_ms": 0.0,
+      "min_ms": 1.001596450805664,
+      "max_ms": 1.001596450805664,
+      "median_ms": 1.001596450805664
+    },
+    "transmission": {
+      "mean_ms": 1.9366741180419922,
+      "std_ms": 0.0,
+      "min_ms": 1.9366741180419922,
+      "max_ms": 1.9366741180419922,
+      "median_ms": 1.9366741180419922
+    },
+    "decompression": {},
+    "synthesis": {},
+    "end_to_end": {
+      "mean_ms": 13523.079872131348,
+      "std_ms": 0.0,
+      "min_ms": 13523.079872131348,
+      "max_ms": 13523.079872131348,
+      "median_ms": 13523.079872131348
+    }
+  }
+}

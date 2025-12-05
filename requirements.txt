@@ -1,0 +1,30 @@
+numpy
+scipy
+sounddevice
+soundfile
+librosa
+pydub
+
+webrtcvad-wheels
+noisereduce
+
+openai-whisper
+torch
+torchaudio
+
+gTTS
+pyttsx3
+# TTS   (optional)
+
+websockets
+aiohttp
+
+protobuf
+
+jiwer
+# pesq   (optional)
+# pystoi (optional)
+
+python-dotenv
+tqdm
+colorama

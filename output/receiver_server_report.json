@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-12-04T22:43:27.165057",
+  "config": {
+    "tts_engine": "gtts",
+    "sample_rate": 16000,
+    "tts_language": "en"
+  },
+  "compression": {},
+  "transcription": {},
+  "quality": {},
+  "performance": {
+    "recording": {},
+    "preprocessing": {},
+    "transcription": {},
+    "compression": {},
+    "transmission": {},
+    "decompression": {},
+    "synthesis": {},
+    "end_to_end": {}
+  },
+  "receiver_stats": {
+    "packets_received": 0,
+    "total_text_length": 0,
+    "total_audio_duration": 0,
+    "average_packet_size": 0
+  }
+}
