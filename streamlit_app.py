@@ -4,8 +4,9 @@ Ultra-Low Bitrate Semantic Speech Coding - Streamlit Web Application
 Complete interactive web interface for semantic speech compression system
 
 UPDATES:
-- Removed 'key' argument from st.audio() to fix MediaMixin TypeError
-- Updated dataframe width parameters to be compatible with current Streamlit version
+- Added Browser-based Recorder (st_audiorec) for Cloud Deployment support
+- Retained Local Recorder for localhost usage inside an expander
+- Fixed MediaMixin TypeError
 """
 
 import streamlit as st
@@ -18,6 +19,11 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+
+# --- NEW IMPORT FOR CLOUD RECORDING ---
+from st_audiorec import st_audiorec
+import soundfile as sf
+import librosa
 
 # Import your project modules
 from config import Config
@@ -151,7 +157,6 @@ def load_models(whisper_model="base", tts_engine="gtts"):
 
 def audio_to_bytes(audio_array, sample_rate):
     """Convert numpy audio array to bytes for download"""
-    import soundfile as sf
     buffer = io.BytesIO()
     sf.write(buffer, audio_array, sample_rate, format='WAV')
     buffer.seek(0)
@@ -360,64 +365,54 @@ def main():
     ])
 
     # ============================================================================
-    # TAB 1: RECORD & PROCESS
+    # TAB 1: RECORD & PROCESS (UPDATED FOR CLOUD)
     # ============================================================================
 
     with tab1:
-        st.header("🎤 Record and Process Audio")
+        st.header("🎤 Record Audio")
+        st.info("💡 Use the recorder below (Browser-Based) for Streamlit Cloud compatibility.")
 
-        col1, col2 = st.columns([2, 1])
+        # --- NEW BROWSER RECORDER (st_audiorec) ---
+        wav_audio_data = st_audiorec()
 
-        with col1:
-            st.subheader("Recording Options")
+        if wav_audio_data is not None:
+            col1, col2 = st.columns(2)
+            with col1:
+                st.audio(wav_audio_data, format='audio/wav')
+            
+            with col2:
+                if st.button("🚀 Process Recording", type="primary"):
+                    if st.session_state.encoder is None:
+                        st.error("❌ Please load models first (sidebar)")
+                    else:
+                        try:
+                            # Convert raw bytes to numpy array using librosa
+                            audio_bytes = io.BytesIO(wav_audio_data)
+                            audio, sr = librosa.load(audio_bytes, sr=Config.SAMPLE_RATE)
+                            st.session_state.current_audio = audio
+                            
+                            # Send to pipeline
+                            process_audio_pipeline(audio, None, show_plots, auto_play)
+                        except Exception as e:
+                            st.error(f"Error processing audio data: {e}")
 
-            record_mode = st.radio(
-                "Recording Mode",
-                options=["Fixed Duration", "Voice Activity Detection"],
-                help="VAD stops automatically when you stop speaking"
-            )
+        st.divider()
 
-            if record_mode == "Fixed Duration":
-                duration = st.slider(
-                    "Recording Duration (seconds)",
-                    min_value=1,
-                    max_value=30,
-                    value=5
-                )
-            else:
-                duration = None
-                st.info("🎙️ Recording will stop automatically after you pause speaking")
+        # --- LEGACY LOCAL RECORDER (Hidden in Expander) ---
+        with st.expander("🔌 Advanced: Server-Side Recorder (Localhost Only)"):
+            st.warning("⚠️ This recorder tries to access the microphone of the SERVER. It will fail on Cloud hosting.")
+            
+            l_col1, l_col2 = st.columns([2, 1])
+            with l_col1:
+                duration = st.slider("Fixed Duration (seconds)", 1, 30, 5)
+            with l_col2:
+                if st.button("🔴 Record Local"):
+                    if st.session_state.encoder is None:
+                        st.error("❌ Please load models first")
+                    else:
+                        record_and_process(duration, show_plots, auto_play)
 
-        with col2:
-            st.subheader("Quick Actions")
-
-            if st.button("🔴 Start Recording", type="primary", key="btn_record"):
-                if st.session_state.encoder is None:
-                    st.error("❌ Please load models first (sidebar)")
-                else:
-                    record_and_process(duration, show_plots, auto_play)
-
-            if st.button("🔊 Play Original", key="btn_play_orig"):
-                if st.session_state.current_audio is not None:
-                    audio_bytes = audio_to_bytes(
-                        st.session_state.current_audio,
-                        Config.SAMPLE_RATE
-                    )
-                    st.audio(audio_bytes, format="audio/wav")
-                else:
-                    st.warning("No audio recorded yet")
-
-            if st.button("🔊 Play Synthesized", key="btn_play_synth"):
-                if st.session_state.synthesized_audio is not None:
-                    audio_bytes = audio_to_bytes(
-                        st.session_state.synthesized_audio,
-                        Config.SAMPLE_RATE
-                    )
-                    st.audio(audio_bytes, format="audio/wav")
-                else:
-                    st.warning("No synthesized audio yet")
-
-        # Display results
+        # Display results if available
         if st.session_state.last_results is not None:
             display_results(st.session_state.last_results, context="tab1")
 
@@ -683,9 +678,9 @@ def main():
 # ============================================================================
 
 def record_and_process(duration, show_plots, auto_play):
-    """Record audio and process through complete pipeline"""
+    """Record audio and process through complete pipeline (LOCAL ONLY)"""
 
-    with st.spinner("🎙️ Recording audio..."):
+    with st.spinner("🎙️ Recording audio (Local)..."):
         try:
             recorder = AudioRecorder(Config)
             audio = recorder.record_audio(duration)
