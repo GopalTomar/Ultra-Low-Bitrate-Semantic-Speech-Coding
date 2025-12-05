@@ -15,7 +15,7 @@ class Config:
     
     # ============ ASR (Speech-to-Text) SETTINGS ============
     WHISPER_MODEL = "base"  # Options: tiny, base, small, medium, large
-    # Model size vs speed tradeoff:
+    # Model size vs speed tradeoff: 
     # - tiny: ~1GB RAM, fastest, 74M params
     # - base: ~1GB RAM, fast, 74M params  
     # - small: ~2GB RAM, balanced, 244M params
