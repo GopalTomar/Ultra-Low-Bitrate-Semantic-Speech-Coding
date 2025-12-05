@@ -12,19 +12,25 @@ openai-whisper
 torch
 torchaudio
 
-gTTS
+gtts
 pyttsx3
-# TTS   (optional)
 
 websockets
 aiohttp
 
 protobuf
-
 jiwer
-# pesq   (optional)
-# pystoi (optional)
 
 python-dotenv
 tqdm
 colorama
+
+streamlit
+plotly
+matplotlib
+seaborn
+pandas
+pillow
+
+streamlit-webrtc
+streamlit-option-menu
