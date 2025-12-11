@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Papers Reference Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .controls {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .download-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .table-container {
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        td {
+            padding: 20px 18px;
+            font-size: 14px;
+        }
+
+        .paper-number {
+            font-weight: 700;
+            font-size: 18px;
+            color: #667eea;
+            background: #f0f3ff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .paper-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .paper-authors {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .cat-core { background: #e3f2fd; color: #1976d2; }
+        .cat-encoder { background: #fff3e0; color: #f57c00; }
+        .cat-decoder { background: #f3e5f5; color: #7b1fa2; }
+        .cat-audio { background: #e8f5e9; color: #388e3c; }
+        .cat-benchmark { background: #fce4ec; color: #c2185b; }
+
+        .link-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 2px;
+        }
+
+        .link-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .relevance {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .stats {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controls, .download-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .table-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Research Papers Reference Guide</h1>
+            <p>Ultra-Low Bitrate Semantic Speech Coding Project</p>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search papers, authors, or keywords...">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All Papers</button>
+                <button class="filter-btn" data-filter="Core Concept">Core Concept</button>
+                <button class="filter-btn" data-filter="Encoder">Encoder (ASR)</button>
+                <button class="filter-btn" data-filter="Decoder">Decoder (TTS)</button>
+                <button class="filter-btn" data-filter="Audio Processing">Audio Processing</button>
+                <button class="filter-btn" data-filter="Benchmarking">Benchmarking</button>
+            </div>
+            <button class="download-btn" onclick="downloadTable()">⬇ Download PDF</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Total Papers</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Categories</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="visibleCount">12</span>
+                <span class="stat-label">Visible Papers</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="papersTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Paper Title & Authors</th>
+                        <th>Category</th>
+                        <th>Relevance to Project</th>
+                        <th>Links</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be inserted by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const papers = [
+            {
+                number: 1,
+                title: "Semantic Communication Systems for Speech Transmission",
+                authors: "Z. Weng and Z. Qin (2021)",
+                category: "Core Concept",
+                relevance: "Direct Project Architecture. Proposes using ASR to extract text, transmitting text, and using TTS to recover speech.",
+                links: [
+                    { text: "IEEE", url: "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Semantic%20Communication%20Systems%20for%20Speech%20Transmission" },
+                    { text: "DeepSC-ST", url: "https://arxiv.org/abs/2104.03833" }
+                ]
+            },
+            {
+                number: 2,
+                title: "DeepSC: Deep Semantic Communications",
+                authors: "H. Xie, Z. Qin, G. Y. Li, and B.-H. Juang (2021)",
+                category: "Core Concept",
+                relevance: "Compression Engine. Establishes semantic communication field and proves semantic tokens are more efficient than bits.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/2011.00287" }
+                ]
+            },
+            {
+                number: 3,
+                title: "Beyond Transmitting Bits: Context, Semantics, and Task-Oriented Communications",
+                authors: "D. Gündüz et al. (2022)",
+                category: "Core Concept",
+                relevance: "Introduction/Motivation. Survey explaining why to move from Shannon's bit-level to semantic communication.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/2207.09344" }
+                ]
+            },
+            {
+                number: 4,
+                title: "Robust Speech Recognition via Large-Scale Weak Supervision (Whisper)",
+                authors: "Alec Radford, Jong Wook Kim, et al. (OpenAI) (2022)",
+                category: "Encoder",
+                relevance: "Critical reference for encoder. Original Whisper paper explaining accuracy and noise robustness.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/2212.04356" }
+                ]
+            },
+            {
+                number: 5,
+                title: "Attention Is All You Need",
+                authors: "A. Vaswani et al. (2017)",
+                category: "Encoder",
+                relevance: "Underlying Technology. Introduced Transformer architecture used in both Whisper ASR and TTS models.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/1706.03762" }
+                ]
+            },
+            {
+                number: 6,
+                title: "Voice Activity Detection: Fundamentals and Speech Recognition System Robustness",
+                authors: "J. Ramirez et al. (2007)",
+                category: "Encoder",
+                relevance: "VAD & Preprocessing. Explains algorithms behind Voice Activity Detection for silence removal.",
+                links: [
+                    { text: "ResearchGate", url: "https://www.researchgate.net/publication/226956721_Voice_Activity_Detection_Fundamentals_and_Speech_Recognition_System_Robustness" }
+                ]
+            },
+            {
+                number: 7,
+                title: "Natural TTS Synthesis by Conditioning WaveNet on Mel Spectrogram Predictions (Tacotron 2)",
+                authors: "J. Shen et al. (Google) (2018)",
+                category: "Decoder",
+                relevance: "Modern TTS architecture. Explains how text tokens convert to Mel-spectrograms in Coqui/gTTS systems.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/1712.05884" }
+                ]
+            },
+            {
+                number: 8,
+                title: "Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech (VITS)",
+                authors: "J. Kim et al. (2021)",
+                category: "Decoder",
+                relevance: "High-End TTS. State-of-the-art for human-sounding synthesis used in higher quality Coqui TTS settings.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/2106.06103" }
+                ]
+            },
+            {
+                number: 9,
+                title: "Librosa: Audio and Music Signal Analysis in Python",
+                authors: "B. McFee et al. (2015)",
+                category: "Audio Processing",
+                relevance: "Audio Tools & Visualizer. Citation for librosa library used for loading audio and plotting spectrograms.",
+                links: [
+                    { text: "Official Paper", url: "https://librosa.org/doc/latest/index.html" }
+                ]
+            },
+            {
+                number: 10,
+                title: "Suppression of Acoustic Noise in Speech Using Spectral Subtraction",
+                authors: "S. Boll (1979)",
+                category: "Audio Processing",
+                relevance: "Noise Reduction. Classic paper defining spectral gating method used by noisereduce library.",
+                links: [
+                    { text: "IEEE", url: "https://ieeexplore.ieee.org/document/1164553" }
+                ]
+            },
+            {
+                number: 11,
+                title: "High-Quality, Low-Delay Music Coding in the Opus Codec",
+                authors: "J.-M. Valin et al. (2012)",
+                category: "Benchmarking",
+                relevance: "Baseline Comparison. Explains Opus codec (industry standard for VoIP) for bitrate comparison.",
+                links: [
+                    { text: "arXiv", url: "https://arxiv.org/abs/1602.04845" }
+                ]
+            },
+            {
+                number: 12,
+                title: "A Mathematical Theory of Communication",
+                authors: "C. E. Shannon (1948)",
+                category: "Benchmarking",
+                relevance: "Theoretical Limit. Founding paper of Information Theory for bitrate and entropy calculations.",
+                links: [
+                    { text: "PDF", url: "http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf" }
+                ]
+            }
+        ];
+
+        function renderTable(filteredPapers) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            filteredPapers.forEach(paper => {
+                const categoryClass = paper.category.toLowerCase().replace(/\s+/g, '-');
+                const linksHTML = paper.links.map(link => 
+                    `<a href="${link.url}" target="_blank" class="link-btn">${link.text}</a>`
+                ).join(' ');
+
+                const row = `
+                    <tr data-category="${paper.category}">
+                        <td><div class="paper-number">${paper.number}</div></td>
+                        <td>
+                            <div class="paper-title">${paper.title}</div>
+                            <div class="paper-authors">${paper.authors}</div>
+                        </td>
+                        <td><span class="category-badge cat-${categoryClass.split('-')[0]}">${paper.category}</span></td>
+                        <td><div class="relevance">${paper.relevance}</div></td>
+                        <td>${linksHTML}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('visibleCount').textContent = filteredPapers.length;
+        }
+
+        // Initial render
+        renderTable(papers);
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = papers.filter(paper => 
+                paper.title.toLowerCase().includes(searchTerm) ||
+                paper.authors.toLowerCase().includes(searchTerm) ||
+                paper.relevance.toLowerCase().includes(searchTerm) ||
+                paper.category.toLowerCase().includes(searchTerm)
+            );
+            renderTable(filtered);
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const filtered = filter === 'all' ? papers : papers.filter(p => p.category === filter);
+                renderTable(filtered);
+            });
+        });
+
+        // Download functionality
+        function downloadTable() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
